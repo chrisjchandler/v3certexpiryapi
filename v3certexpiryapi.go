@@ -11,30 +11,30 @@ import (
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		// Get the file path from the request parameters
+		// Get the file path 
 		filePath := r.URL.Query().Get("file_path")
 
-		// Read the certificate file
+		// Read the cert
 		certData, err := ioutil.ReadFile(filePath)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		// Decode the PEM-encoded certificate data to DER-encoded data, if necessary
+		// Decode the PEM-encoded certificate convert if you need to
 		block, _ := pem.Decode(certData)
 		if block != nil {
 			certData = block.Bytes
 		}
 
-		// Parse the certificate
+		// Parse 
 		cert, err := x509.ParseCertificate(certData)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		// Calculate the number of days remaining before the certificate expires
+		// Calc the num of days remaining before the certificate expires
 		now := time.Now()
 		duration := cert.NotAfter.Sub(now)
 		daysRemaining := int(duration.Hours() / 24)
