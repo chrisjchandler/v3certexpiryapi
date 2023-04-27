@@ -3,7 +3,7 @@ package main
 import (
 	"crypto/x509"
 	"encoding/json"
-//	"fmt"
+	"encoding/pem"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -19,6 +19,12 @@ func main() {
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
+		}
+
+		// Decode the PEM-encoded certificate data to DER-encoded data, if necessary
+		block, _ := pem.Decode(certData)
+		if block != nil {
+			certData = block.Bytes
 		}
 
 		// Parse the certificate
